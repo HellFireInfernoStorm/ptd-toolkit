@@ -64,10 +64,13 @@ Then follow **cheatsheets/00-KILLCHAIN.md** top to bottom.
 | `wordlists/` | rockyou-top250/1000, season-pattern (built by setup.sh) |
 | `loot/` | gitignored scratch — nmap out, screenshots, creds |
 
-## 4. Helper aliases (after `source aliases.sh`)
-`sett <ip>` set RHOST+LHOST · `seti <ip>` set only RHOST · `vars` show them ·
-`nmapfast`/`nmapsvc` · `smbnull` · `serve` (http :8081) · `smbserve` ·
-`l4`/`l5`/`l6` listeners · `winrev <ip> <port>` print Windows rev-shell · `venexe` msfvenom exe.
+## 4. Helper commands (after `source aliases.sh`)
+> Several are shell **functions** (`sett`, `seti`, `vars`, `nmapsvc`, `winrev`, `venexe`), so
+> `type <name>` lists them — not `alias`. The rest (`nmapfast`, `smbnull`, `serve`, `l4`…) are aliases.
+
+`sett <ip>` set RHOST + auto LHOST (route to target) · `seti <iface>` override LHOST from an interface ·
+`vars` show them · `nmapfast`/`nmapsvc` · `smbnull` · `serve` (http :8081) · `smbserve` ·
+`l4`/`l5`/`l6` listeners · `winrev [port]` print Windows rev-shell (LHOST baked in) · `venexe [port]` msfvenom exe.
 
 ## 5. Exam day, in one breath
 1. `sett $IP` → `bash scripts/recon.sh $IP`

