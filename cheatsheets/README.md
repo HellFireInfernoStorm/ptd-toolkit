@@ -6,7 +6,8 @@ Reverse-shell ports are **4444 / 5555 / 6666 only**. Metasploit **once** (footho
 
 | Sheet | When you reach for it |
 |-------|-----------------------|
-| `00-KILLCHAIN.md` | **Start here.** Master chain recon→foothold→privesc, time budget, stuck-nudges. |
+| `00-SETUP.md` | Fresh-Kali setup + **full guide to every script, alias & function** (recon, web, winrev…). |
+| `00-KILLCHAIN.md` | **Start here on a box.** Master chain recon→foothold→privesc, time budget, stuck-nudges. |
 | `01-recon-enum.md` | Port scan + per-service enum (SMB, FTP, HTTP, RDP, MSSQL, SNMP, WinRM). |
 | `02-foothold.md` | Get the easy flag + first shell — 4 Windows archetypes + web vectors. |
 | `03-shells.md` | Listeners + reverse-shell payloads (Win/Linux) + TTY upgrade. |

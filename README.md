@@ -54,7 +54,8 @@ Then follow **cheatsheets/00-KILLCHAIN.md** top to bottom.
 ## 3. Layout
 | Path | What |
 |------|------|
-| `cheatsheets/00-KILLCHAIN.md` | ⭐ master driver — start here every time |
+| `cheatsheets/00-SETUP.md` | fresh-Kali setup + full guide to every script/alias/function |
+| `cheatsheets/00-KILLCHAIN.md` | ⭐ master driver — start here on a box |
 | `cheatsheets/01-recon-enum.md` | gentle nmap + per-service enum |
 | `cheatsheets/02-foothold.md` | 4 foothold archetypes (SMB/FTP/exploit/web) |
 | `cheatsheets/03-shells.md` | reverse shells + listeners + TTY upgrade |
@@ -62,7 +63,7 @@ Then follow **cheatsheets/00-KILLCHAIN.md** top to bottom.
 | `cheatsheets/05-lin-privesc.md` | cron/sudo/SUID/caps/kernel |
 | `cheatsheets/06-passwords.md` | hash-ID, crack, gentle guess |
 | `cheatsheets/07-transfer.md` | serve :8081, certutil pull, exfil |
-| `scripts/recon.sh` | scripted gentle recon |
+| `scripts/recon.sh` | ⭐ thorough **port-agnostic** recon — detects services on any port, enum + searchsploit + auto web dir-scan + hints, streams to terminal & `loot/` |
 | `scripts/listen.sh [port]` | rlwrap nc listener (4444/5555/6666) |
 | `scripts/serve.sh [port]` | http.server over payloads/ (:8081) |
 | `scripts/fetch-binaries.sh` | download privesc/enum binaries (run at home) |
@@ -74,9 +75,13 @@ Then follow **cheatsheets/00-KILLCHAIN.md** top to bottom.
 > Several are shell **functions** (`sett`, `seti`, `vars`, `nmapsvc`, `winrev`, `venexe`), so
 > `type <name>` lists them — not `alias`. The rest (`nmapfast`, `smbnull`, `serve`, `l4`…) are aliases.
 
-`sett <ip>` set RHOST + auto LHOST (route to target) · `seti <iface>` override LHOST from an interface ·
-`vars` show them · `nmapfast`/`nmapsvc` · `smbnull` · `serve` (http :8081) · `smbserve` ·
-`l4`/`l5`/`l6` listeners · `winrev [port]` print Windows rev-shell (LHOST baked in) · `venexe [port]` msfvenom exe.
+**Targeting:** `sett <ip>` set RHOST + auto LHOST (route to target) · `seti <iface>` override LHOST · `vars` show them.
+**Recon:** `recon [ip]` full port-agnostic recon · `nmapfast $RHOST` · `nmapsvc <ports>`.
+**Services (take the REAL port):** `smbnull [port]` · `smap [port]` · `web <port>` · `gob <port>` · `fuzz <url>` · `rdp u p [port]` · `winrm u p [port]` · `ssql u p [port]`.
+**Shells/serve (your fixed ports):** `l4`/`l5`/`l6` listeners · `serve` (:8081) · `smbserve` · `winrev [port]` Windows rev-shell · `venexe [port]` msfvenom exe.
+**Evidence:** `ev <cmd…>` run a command showing it + tee output to `loot/`.
+
+Full usage guide with examples: `cheatsheets/00-SETUP.md` (also in the PDF).
 
 ## 5. Exam day, in one breath
 1. `sett $IP` → `bash scripts/recon.sh $IP`

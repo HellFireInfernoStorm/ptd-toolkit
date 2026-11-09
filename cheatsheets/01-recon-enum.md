@@ -2,6 +2,14 @@
 
 Vars: `$RHOST` target, `$LHOST` Kali. **No `-T5`, no `-A` blasting at the start.** Slow = unblacklisted.
 
+> **Fast path:** `recon` (the script) does all of this port-agnostically — detects services on ANY
+> port, runs the right enum, `searchsploit`s versions, auto dir-scans web ports, and prints exploit
+> hints with the real port filled in. The manual commands below are for driving a single step by hand.
+>
+> **⚠ Ports can be swapped** by the lecturer — don't assume 80=web / 445=SMB. Read the **service**
+> column from `-sV`, then act on the real port: `web <port>`, `smbnull <port>`, `gob <port>`,
+> `winrm u p <port>`, `ssql u p <port>`. Every toolkit helper takes the port as an argument.
+
 ## Port scan (two-step, quiet)
 ```bash
 # 1) all ports, slow, no DNS/ping noise
