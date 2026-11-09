@@ -77,10 +77,12 @@ c_g "    season-pattern.txt ($(wc -l < wordlists/season-pattern.txt) lines, year
 # 3) Tool check — what's installed, what's missing
 # ---------------------------------------------------------------------------
 c_y "[*] Checking tools..."
-NEED=(nmap smbclient enum4linux-ng nxc crackmapexec gobuster hydra medusa \
+# NOTE: certutil is a Windows/target-side LOLbin (not a Kali tool) — not checked here.
+#       crackmapexec was renamed to netexec (nxc), which IS in the list.
+NEED=(nmap smbclient enum4linux-ng nxc gobuster hydra medusa \
       hashcat john hashid searchsploit msfvenom msfconsole nc rlwrap \
       evil-winrm xfreerdp sqsh impacket-mssqlclient snmpwalk whatweb curl wget \
-      python3 certutil impacket-smbserver)
+      python3 impacket-smbserver)
 MISSING=()
 for t in "${NEED[@]}"; do
   if command -v "$t" >/dev/null 2>&1; then
