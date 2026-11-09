@@ -81,7 +81,7 @@ c_y "[*] Checking tools..."
 #       crackmapexec was renamed to netexec (nxc), which IS in the list.
 NEED=(nmap smbclient enum4linux-ng nxc gobuster hydra medusa \
       hashcat john hashid searchsploit msfvenom msfconsole nc rlwrap \
-      evil-winrm xfreerdp sqsh impacket-mssqlclient snmpwalk whatweb curl wget \
+      evil-winrm sqsh impacket-mssqlclient snmpwalk whatweb curl wget \
       python3 impacket-smbserver)
 MISSING=()
 for t in "${NEED[@]}"; do
@@ -92,10 +92,23 @@ for t in "${NEED[@]}"; do
     MISSING+=("$t")
   fi
 done
+
+# RDP client: FreeRDP 2 provides `xfreerdp`, FreeRDP 3 (current Kali) provides `xfreerdp3`.
+if command -v xfreerdp >/dev/null 2>&1; then
+  printf '    \033[32m[+]\033[0m %s\n' "xfreerdp"
+elif command -v xfreerdp3 >/dev/null 2>&1; then
+  printf '    \033[32m[+]\033[0m %s\n' "xfreerdp3"
+  c_y "        tip: symlink so cheat-sheet 'xfreerdp ...' commands work as written:"
+  c_y "        sudo ln -sf \"\$(command -v xfreerdp3)\" /usr/local/bin/xfreerdp"
+else
+  printf '    \033[31m[-]\033[0m %s\n' "xfreerdp/xfreerdp3 (missing — sudo apt install -y freerdp3-x11)"
+  MISSING+=("freerdp3-x11")
+fi
+
 if [ "${#MISSING[@]}" -gt 0 ]; then
   c_y "    Missing: ${MISSING[*]}"
   c_y "    Install common ones: sudo apt install -y nmap smbclient hydra medusa hashcat john \\"
-  c_y "      gobuster rlwrap evil-winrm freerdp2-x11 snmp whatweb netexec seclists exploitdb"
+  c_y "      gobuster rlwrap evil-winrm freerdp3-x11 snmp whatweb netexec seclists exploitdb"
   c_y "    netexec(nxc): pipx install netexec   |   enum4linux-ng: pipx install enum4linux-ng"
 fi
 

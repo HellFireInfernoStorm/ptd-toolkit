@@ -51,6 +51,8 @@ Look for: login forms, upload, admin panels, `/api/*`, template params (SSTI), "
 ```bash
 nmap -p3389 --script rdp-ntlm-info $RHOST          # hostname/domain leak
 xfreerdp /u:<user> /p:'<pass>' /v:$RHOST /cert:ignore +clipboard    # once you have creds
+# Current Kali ships FreeRDP3 -> binary is `xfreerdp3`. Symlink once so the line above works:
+#   sudo ln -sf "$(command -v xfreerdp3)" /usr/local/bin/xfreerdp
 ```
 
 ### MSSQL — 1433  /  MySQL — 3306
