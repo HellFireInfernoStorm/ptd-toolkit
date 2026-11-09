@@ -1,0 +1,19 @@
+# Exam-day scratch — NEVER commit (screenshots, nmap output, creds, session logs)
+loot/*
+!loot/.gitignore
+
+# Generated at setup time (built by setup.sh on each box)
+aliases.sh
+wordlists/rockyou-top250.txt
+wordlists/rockyou-top1000.txt
+wordlists/season-pattern.txt
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# NOTE: payloads/ binaries (SigmaPotato.exe, winPEAS, nc.exe, linpeas.sh, ...) ARE committed
+# on purpose so a fresh `git clone` on Kali is self-contained. Keep this repo PRIVATE.

