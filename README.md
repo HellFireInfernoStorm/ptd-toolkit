@@ -18,9 +18,10 @@ git clone <your-repo-url> ptd && cd ptd/toolkit
 bash setup.sh            # dirs, wordlists, tool-check, writes aliases.sh
 source aliases.sh        # sett/seti/vars + nmapfast/smbnull/serve/l4/l5/l6/winrev...
 ```
-Already done at home (needs internet) — commit the results so the clone is self-contained:
+Pull the privesc/enum binaries (needs internet; they're **gitignored**, not stored in the repo):
 ```bash
 bash scripts/fetch-binaries.sh   # pulls SigmaPotato, winPEAS, linpeas, nc.exe, pspy...
+ls -la payloads/                 # verify each file size > 0
 ```
 
 ## 2. Set the target, then go

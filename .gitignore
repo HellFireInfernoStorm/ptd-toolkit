@@ -15,5 +15,17 @@ desktop.ini
 *.swp
 *~
 
-# NOTE: payloads/ binaries (SigmaPotato.exe, winPEAS, nc.exe, linpeas.sh, ...) ARE committed
-# on purpose so a fresh `git clone` on Kali is self-contained. Keep this repo PRIVATE.
+# Privesc/enum binaries & generated payloads — pulled on each box via scripts/fetch-binaries.sh
+# and kept OUT of this PUBLIC repo on purpose. The text playbooks in payloads/ stay tracked.
+payloads/*.exe
+payloads/*.dll
+payloads/*.msi
+payloads/*.aspx
+payloads/*.elf
+payloads/*.php
+payloads/pspy32
+payloads/pspy64
+payloads/linpeas.sh
+payloads/LinEnum.sh
+payloads/PwnKit
+payloads/PwnKit.c

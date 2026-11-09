@@ -1,7 +1,7 @@
 # payloads/ — pre-staged binaries & payloads
 
-Everything you drop onto the target. **Stage the binaries at home with internet** (`bash
-scripts/fetch-binaries.sh`) and commit them, so an exam-day `git clone` already has them.
+Everything you drop onto the target. The binaries are **not stored in this repo** (it's public) —
+pull them onto each box with `bash scripts/fetch-binaries.sh` (needs internet; they're gitignored).
 All reverse-shell/listener ports are **4444 (foothold) / 5555 (privesc) / 6666 (spare)**.
 
 ## What lives here
@@ -37,5 +37,5 @@ cd payloads && python3 -m http.server 8081
   exploitation does). Build as many staged payloads as you want.
 - If a Potato is AV-flagged, try another (SigmaPotato ↔ PrintSpoofer ↔ GodPotato).
 - Match **GodPotato-NET&lt;ver&gt;** to the target's .NET; try NET4 first if unsure.
-- These binaries are **gitignored by default is OFF** here — they ARE committed so the clone is
-  self-contained. If your repo is public, keep it private or strip binaries before pushing.
+- These binaries are **gitignored** — they are NOT in the repo. Run `scripts/fetch-binaries.sh`
+  on each box (clone + fetch both need only public internet, no GitHub login).
