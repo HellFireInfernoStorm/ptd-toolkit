@@ -14,10 +14,12 @@ Windows privesc, copy-paste first.
 
 ## 1. Clone + set up (do this first, on Kali)
 ```bash
-git clone <your-repo-url> ptd && cd ptd/toolkit
-bash setup.sh            # dirs, wordlists, tool-check, writes aliases.sh
+git clone https://github.com/HellFireInfernoStorm/ptd-toolkit.git && cd ptd-toolkit
+bash setup.sh            # installs apt deps (sudo), builds wordlists, writes aliases, checks tools
 source aliases.sh        # sett/seti/vars + nmapfast/smbnull/serve/l4/l5/l6/winrev...
 ```
+`setup.sh` auto-installs the Kali packages the toolkit needs (`enum4linux-ng`, `freerdp3-x11`, …) and
+symlinks `xfreerdp → xfreerdp3`. Run `SKIP_APT=1 bash setup.sh` to skip the apt step.
 Pull the privesc/enum binaries (needs internet; they're **gitignored**, not stored in the repo):
 ```bash
 bash scripts/fetch-binaries.sh   # pulls SigmaPotato, winPEAS, linpeas, nc.exe, pspy...

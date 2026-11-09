@@ -26,6 +26,16 @@ mkdir -p loot/nmap loot/screenshots loot/creds
 c_g "    loot/ wordlists/ payloads/ scripts/ ready."
 
 # ---------------------------------------------------------------------------
+# 1b) Install apt dependencies (tuned for the exam base image). SKIP_APT=1 to skip.
+# ---------------------------------------------------------------------------
+if [ "${SKIP_APT:-0}" = "1" ]; then
+  c_y "[*] SKIP_APT=1 — skipping apt dependency install."
+else
+  c_y "[*] Installing apt dependencies (uses sudo; run 'SKIP_APT=1 bash setup.sh' to skip)..."
+  bash "$TOOLKIT_DIR/scripts/install-deps.sh" || c_r "    [-] install-deps hit errors (see above); continuing."
+fi
+
+# ---------------------------------------------------------------------------
 # 2) Trimmed wordlists (SPEED: top-N rockyou + pattern list)
 # ---------------------------------------------------------------------------
 c_y "[*] Building trimmed wordlists..."

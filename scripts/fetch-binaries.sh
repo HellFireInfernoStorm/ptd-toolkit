@@ -9,12 +9,20 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../payloads" && pwd)"
 cd "$DIR"
 echo "[*] Fetching into: $DIR"
 
-dl(){ # dl <url> <outfile>
-  local url="$1" out="$2"
-  if [ -s "$out" ]; then echo "    [=] $out already present, skip"; return; fi
-  echo "    [>] $out"
-  if command -v curl >/dev/null; then curl -fsSL "$url" -o "$out" || echo "        [-] FAILED: $url";
-  else wget -q "$url" -O "$out" || echo "        [-] FAILED: $url"; fi
+dl(){ # dl <url> <outfile> [tries]   — retries on transient GitHub errors (e.g. 504)
+  local url="$1" out="$2" tries="${3:-3}" i
+  if [ -s "$out" ]; then echo "    [=] $out already present, skip"; return 0; fi
+  for i in $(seq 1 "$tries"); do
+    echo "    [>] $out (try $i/$tries)"
+    if command -v curl >/dev/null; then
+      curl -fsSL --retry 3 --retry-delay 2 --connect-timeout 20 "$url" -o "$out" && [ -s "$out" ] && return 0
+    else
+      wget -q --tries=3 --timeout=20 "$url" -O "$out" && [ -s "$out" ] && return 0
+    fi
+    rm -f "$out"; sleep 3
+  done
+  echo "        [-] FAILED after $tries tries: $url"
+  return 1
 }
 
 # --- Windows privesc: Potato family (SeImpersonate -> SYSTEM) ------------------
@@ -35,6 +43,14 @@ dl "https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASany.exe
 # --- nc.exe (both archs) ------------------------------------------------------
 dl "https://github.com/int0x33/nc.exe/raw/master/nc.exe"   "nc.exe"
 dl "https://github.com/int0x33/nc.exe/raw/master/nc64.exe" "nc64.exe"
+# Fallback: Kali bundles nc.exe (32-bit) under windows-resources — use it if the download failed.
+for n in nc.exe nc64.exe; do
+  if [ ! -s "$n" ]; then
+    for src in "/usr/share/windows-resources/binaries/$n" "/usr/share/windows-binaries/$n"; do
+      [ -f "$src" ] && cp "$src" "$n" && echo "    [+] $n copied from $src" && break
+    done
+  fi
+done
 
 # --- Linux privesc / enum -----------------------------------------------------
 dl "https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas.sh" "linpeas.sh"
