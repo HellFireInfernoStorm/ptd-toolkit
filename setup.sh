@@ -146,8 +146,8 @@ seti(){ export LHOST="$(ip -4 -o addr show "$1" 2>/dev/null | awk '{print $4}' |
 vars(){ echo "RHOST=${RHOST:-<unset>}  LHOST=${LHOST:-<unset>}"; }
 
 # recon
-alias nmapfast='nmap -Pn -n -T2 -p- --open -oN loot/nmap/allports.txt'   # nmapfast $RHOST
-nmapsvc(){ nmap -Pn -n -T2 -sV -sC -p "$1" -oN loot/nmap/services.txt "${2:-$RHOST}"; }  # nmapsvc 21,80 $RHOST
+alias nmapfast='nmap -Pn -n -T3 -p- --open -oN loot/nmap/allports.txt'   # nmapfast $RHOST  (T3=nmap default, polite; T4 if defences lenient)
+nmapsvc(){ nmap -Pn -n -T3 -sV -sC -p "$1" -oN loot/nmap/services.txt "${2:-$RHOST}"; }  # nmapsvc 21,80 $RHOST
 alias smbnull='smbclient -L //$RHOST -N'
 
 # serve files / listeners

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # recon.sh — gentle, scripted recon of a target. Writes to loot/.
 # Usage:  bash scripts/recon.sh <RHOST>
-# Be gentle by design: -T2, no -A blast, gobuster -t 4. Does NOT brute-force anything.
+# Gentle by design: -T3 (nmap default, polite), no -A blast, gobuster -t 4. Does NOT brute-force.
+# Bump to -T4 only if the box's defences look lenient; never -T5 (blacklist risk).
 set -uo pipefail
 
 RHOST="${1:-${RHOST:-}}"
@@ -11,8 +12,8 @@ OUT="$ROOT/loot/nmap"; mkdir -p "$OUT"
 echo "[*] Recon $RHOST (gentle). Output -> $OUT"
 
 # 1) all TCP ports, slow
-echo "[*] Full TCP port sweep (-p- -T2)... this is slow on purpose."
-nmap -Pn -n -T2 -p- --open -oN "$OUT/allports.txt" "$RHOST"
+echo "[*] Full TCP port sweep (-p- -T3)..."
+nmap -Pn -n -T3 -p- --open -oN "$OUT/allports.txt" "$RHOST"
 
 # 2) extract open ports
 PORTS="$(grep -oE '^[0-9]+/tcp' "$OUT/allports.txt" | cut -d/ -f1 | paste -sd, -)"
@@ -21,7 +22,7 @@ echo "[*] Open TCP ports: ${PORTS:-none}"
 
 # 3) service + default scripts on open ports only
 echo "[*] Service/version scan on $PORTS ..."
-nmap -Pn -n -T2 -sV -sC -p "$PORTS" -oN "$OUT/services.txt" "$RHOST"
+nmap -Pn -n -T3 -sV -sC -p "$PORTS" -oN "$OUT/services.txt" "$RHOST"
 
 # 4) hints
 echo

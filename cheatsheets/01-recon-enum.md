@@ -5,13 +5,13 @@ Vars: `$RHOST` target, `$LHOST` Kali. **No `-T5`, no `-A` blasting at the start.
 ## Port scan (two-step, quiet)
 ```bash
 # 1) all ports, slow, no DNS/ping noise
-nmap -Pn -n -T2 -p- --open -oN loot/nmap-allports.txt $RHOST
+nmap -Pn -n -T3 -p- --open -oN loot/nmap-allports.txt $RHOST
 # 2) version + default scripts on ONLY the open ports (comma-separated)
-nmap -Pn -n -T2 -sV -sC -p 21,80,139,445,3389,<etc> -oN loot/nmap-services.txt $RHOST
+nmap -Pn -n -T3 -sV -sC -p 21,80,139,445,3389,<etc> -oN loot/nmap-services.txt $RHOST
 # UDP (quick, common only — SNMP/DNS live here):
-sudo nmap -Pn -n -sU -T2 --top-ports 20 -oN loot/nmap-udp.txt $RHOST
+sudo nmap -Pn -n -sU -T3 --top-ports 20 -oN loot/nmap-udp.txt $RHOST
 ```
-`-Pn` skip ping · `-n` no DNS · `-T2` polite · `--open` only open ports. Record EVERY port+version.
+`-Pn` skip ping · `-n` no DNS · `-T3` polite (nmap default; `-T4` only if defences lenient, never `-T5`) · `--open` only open ports. Record EVERY port+version.
 
 ## Per-service enumeration (pick by what's open)
 
@@ -92,4 +92,4 @@ searchsploit <product> <version>         # offline Exploit-DB
 - The **web app is often on a high random port** — scan `-p-`, don't stop at 80/443.
 - Always try **null/anon** first (SMB `-N`, FTP anonymous) — free easy flags.
 - **View page source + robots + sitemap.xml** — usernames/paths hide in comments & XML.
-- Keep `-t 4` on gobuster and `-T2` on nmap. Note findings in `loot/` as you go (report evidence).
+- Keep `-t 4` on gobuster and `-T3` on nmap (bump nmap to `-T4` only if the box tolerates it; never `-T5`). Note findings in `loot/` as you go (report evidence).

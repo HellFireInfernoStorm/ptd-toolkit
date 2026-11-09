@@ -28,8 +28,8 @@ you have, write it up, move on. Easy = Pass, easy+inter = up to Distinction, all
 ### ① RECON  → `01-recon-enum.md`
 ```bash
 # gentle full-port, then service scan on what's open
-nmap -Pn -n -T2 -p- --open -oN loot/nmap-allports.txt $RHOST
-nmap -Pn -n -T2 -sV -sC -p <csv_open_ports> -oN loot/nmap-services.txt $RHOST
+nmap -Pn -n -T3 -p- --open -oN loot/nmap-allports.txt $RHOST
+nmap -Pn -n -T3 -sV -sC -p <csv_open_ports> -oN loot/nmap-services.txt $RHOST
 ```
 → Note every open port + service/version. **Web apps often sit on a high random port** (e.g. 28553).
 
