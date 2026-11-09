@@ -16,6 +16,7 @@ Reverse-shell ports are **4444 / 5555 / 6666 only**. Metasploit **once** (footho
 | `06-passwords.md` | Hash-ID → crack (top-250) / gentle online guess; where to use creds. |
 | `07-transfer.md` | Move files Kali↔target (certutil, IWR, SMB, http.server 8081); exfil. |
 | `08-reporting.md` | **Part 2 report guide** — fill `Report Template.docx`; technique→finding→risk→remediation Library. PDF: `../PTD-Report-Guide.pdf`. |
+| `09-metasploit.md` | MSF **oracle mode** — the 5-beat rhythm, `check`/suggester, msfvenom+handler (free), the one documented use. |
 
 **Exam-day flow:** set `$RHOST`/`$LHOST` → `01` scan → `02` foothold+easy flag → `03` shell →
 `04`/`05` privesc for intermediate+hard → log + screenshot each flag for the report.
