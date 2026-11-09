@@ -4,6 +4,18 @@ Self-contained Kali toolkit for the **ISEC3002** CTF practical. Clone it onto th
 run `setup.sh`, and work from the cheat sheets. Built for **SPEED**: recon → foothold →
 Windows privesc, copy-paste first.
 
+## Quick start — fresh Kali (one command)
+Download and run the bootstrap straight from GitHub (public repo, no login). It installs deps,
+clones the repo, builds wordlists/aliases, and fetches the binaries:
+```bash
+curl -fsSL https://raw.githubusercontent.com/HellFireInfernoStorm/ptd-toolkit/main/bootstrap.sh | bash
+```
+Then load the aliases into your current shell (new terminals do it automatically):
+```bash
+source ~/ptd-toolkit/aliases.sh
+```
+Toggles: `SKIP_APT=1` (skip apt), `SKIP_FETCH=1` (skip binary download), `DEST=/path` (clone elsewhere).
+
 ## Exam rules baked into every file
 - Reverse-shell/listener ports: **4444 (foothold) · 5555 (privesc) · 6666 (spare)** — nothing else.
 - **Metasploit allowed ONCE.** `msfvenom` + `nc`/`multi-handler` listeners do NOT count. Spend the one
@@ -12,7 +24,7 @@ Windows privesc, copy-paste first.
 - Passwords are **top ~250 of rockyou** or uncrackable — stop after 2–3 min, one user.
 - Kali serves payloads on **:8081** (kept clear of the shell ports).
 
-## 1. Clone + set up (do this first, on Kali)
+## 1. Manual setup (what `bootstrap.sh` does for you)
 ```bash
 git clone https://github.com/HellFireInfernoStorm/ptd-toolkit.git && cd ptd-toolkit
 bash setup.sh            # installs apt deps (sudo), builds wordlists, writes aliases, checks tools
