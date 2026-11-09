@@ -16,6 +16,12 @@ source ~/ptd-toolkit/aliases.sh
 ```
 Toggles: `SKIP_APT=1` (skip apt), `SKIP_FETCH=1` (skip binary download), `DEST=/path` (clone elsewhere).
 
+**Printable cheatsheet:** `PTD-Cheatsheet.pdf` (repo root) bundles all 8 cheat sheets into one styled PDF —
+handy to open on a second screen while you work in the terminal. Grab it on any machine without cloning:
+```bash
+wget https://github.com/HellFireInfernoStorm/ptd-toolkit/raw/main/PTD-Cheatsheet.pdf
+```
+
 ## Exam rules baked into every file
 - Reverse-shell/listener ports: **4444 (foothold) · 5555 (privesc) · 6666 (spare)** — nothing else.
 - **Metasploit allowed ONCE.** `msfvenom` + `nc`/`multi-handler` listeners do NOT count. Spend the one
