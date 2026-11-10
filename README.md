@@ -16,10 +16,17 @@ source ~/ptd-toolkit/aliases.sh
 ```
 Toggles: `SKIP_APT=1` (skip apt), `SKIP_FETCH=1` (skip binary download), `DEST=/path` (clone elsewhere).
 
-**Printable cheatsheet:** `PTD-Cheatsheet.pdf` (repo root) bundles all 8 cheat sheets into one styled PDF —
+**Printable cheatsheet:** `PTD-Cheatsheet.pdf` (repo root) bundles all cheat sheets into one styled PDF —
 handy to open on a second screen while you work in the terminal. Grab it on any machine without cloning:
 ```bash
 wget https://github.com/HellFireInfernoStorm/ptd-toolkit/raw/main/PTD-Cheatsheet.pdf
+```
+
+**Study pack:** `PTD-Guides.pdf` (repo root) is the *why* — all 6 teaching guides (Windows concepts,
+recon, reverse shells, web/footholds, Windows privesc, Metasploit) + 8 concept deep-dives in one PDF.
+Read it to brush up; use the cheatsheet on exam day.
+```bash
+wget https://github.com/HellFireInfernoStorm/ptd-toolkit/raw/main/PTD-Guides.pdf
 ```
 
 ## Exam rules baked into every file
